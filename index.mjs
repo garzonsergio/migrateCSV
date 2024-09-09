@@ -6,6 +6,6 @@ dotenv.config();
 
 const camaras = async () => await getCamaras();
 const zonas = async () => await getZonas();
-zonas().then(console.log).catch(console.error);
+camaras().then(console.log).catch(console.error);
 
 
