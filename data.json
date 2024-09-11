@@ -1,0 +1,32 @@
+[
+  {
+    "fecha_hora_registro": "2023-08-09T22:14:14.580Z",
+    "latitud": "6.135",
+    "longitud": "-75.596",
+    "fecha_hora_inicio": "2017-07-06 15:11:00",
+    "foto": "https://siata.gov.co/hidrologia/incendios_forestales/fotos_incendios/incendio-2017-07-06-15-11.jpeg",
+    "tipo_incendio": "mediano",
+    "id_camara": 47,
+    "zona": 12
+  },
+  {
+    "fecha_hora_registro": "2024-08-09T22:14:14.581Z",
+    "latitud": "6.223",
+    "longitud": "-75.625",
+    "fecha_hora_inicio": "2017-07-06 17:01:00",
+    "foto": "https://siata.gov.co/hidrologia/incendios_forestales/fotos_incendios/incendio-2017-07-06-17-01.jpeg",
+    "tipo_incendio": "mediano",
+    "id_camara": 14,
+    "zona": 1
+  },
+  {
+    "fecha_hora_registro": "2024-08-09T22:14:14.581Z",
+    "latitud": "6.232",
+    "longitud": "-75.618",
+    "fecha_hora_inicio": "2017-07-06 17:12:00",
+    "foto": "https://siata.gov.co/hidrologia/incendios_forestales/fotos_incendios/incendio-2017-07-06-17-12.jpeg",
+    "tipo_incendio": "mediano",
+    "id_camara": 14,
+    "zona": 1
+  }
+]

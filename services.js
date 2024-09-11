@@ -1,4 +1,4 @@
-1import dotenv from "dotenv";
+import dotenv from "dotenv";
 import dayjs from "dayjs";
 import path from "path";
 import fs from "fs";
@@ -52,6 +52,7 @@ export async function postValues(values) {
   formData.append('tipo_incendio', 'mediano');
   formData.append('foto', fs.createReadStream('./6.135.jpeg'));
 
+  
   let url = 'http://127.0.0.1:8000/incendios_operacional/';
 
     try {

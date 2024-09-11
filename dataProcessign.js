@@ -1,15 +1,12 @@
 import fs from "fs";
 import csv from "csv-parser";
-import fetch from "node-fetch";
-import path from "path";
 
 
-import { postValues} from "./new.js";
 
 const urlImages =
   "https://siata.gov.co/hidrologia/incendios_forestales/fotos_incendios/";
 
-//   const camaras = async () => await getCamaras();
+//Arrays to get IDs of Zonas and Camaras
 const zonas = [
   { id: 1, descripcion: "Medellín Occidente" },
   { id: 2, descripcion: "Medellín Zona Urbana" },
@@ -80,68 +77,55 @@ const camaras = [
 
 // Function to normalize strings by removing diacritics
 function normalizeString(str) {
-  return str
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
-
-async function downloadImage(url, filepath) {
-  try {
-    // Step 4: Use fetch to fetch the image data
-    const response = await fetch(url);
-    if (!response.ok)
-      throw new Error(`Failed to fetch image: ${response.statusText}`);
-
-    // Step 5: Write the image data to a file using fs
-    const fileStream = fs.createWriteStream(filepath);
-    response.body.pipe(fileStream);
-
-    fileStream.on("finish", () => {
-      console.log("Image downloaded successfully");
-    });
-  } catch (error) {
-    console.error("Error downloading the image:", error);
+  if (typeof str !== 'string') {
+    return '';
   }
+  return str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-async function processCsvData() {
-  fs.createReadStream("data.csv")
-    .pipe(csv())
-    .on("data", async (row) => {
-   
-      const imageUrl = `${urlImages}${row.foto}`;
-      const outputPath = `./${row.foto}`;
+async function csvToJson(csvFilePath, jsonFilePath) {
+  const jsonData = [];
+  let baseTimestamp = Date.now();
 
-      // Array to send
-      const arrayToPost = {
-        fecha_hora_registro: new Date(),
-        latitud: row?.lat,
-        longitud: row?.lon,
-        fecha_hora_inicio: row?.date,
-        foto: imageUrl,
-        id_camara: camaras.find((camara) => normalizeString(camara.descripcion) === normalizeString(row?.camara))?.id, //Must be sent the ID
-        zona: zonas.find((zona) => normalizeString(zona.descripcion) === normalizeString(row?.municipio))?.id, //Must be sent the ID
-      };
 
-     
-      try {
-        // Ensure the image is downloaded before proceeding
-           
-        console.log("Image downloaded successfully");
-        // // Post the values after the image is downloaded
-        const response = await postValues(arrayToPost);
-        console.log("🚀 ~ .on ~ response:", response)
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(csvFilePath)
+      .pipe(csv())
+      .on('data', (row) => {
 
-      } catch (error) {
-        console.error("Error downloading the image or posting values:", error);
-      }
-    })
-    .on("end", () => {
+        const imageUrl = `${urlImages}${row.foto}`;
 
-      console.log('CSV file processed and JSON file created');
-    });
+        jsonData.push(
+          {
+            "fecha_hora_registro": new Date(baseTimestamp).toISOString(),
+            "latitud": row?.lat,
+            "longitud": row?.lon,
+            "fecha_hora_inicio": row?.date,
+            "foto": imageUrl,
+            "tipo_incendio": "mediano",
+            "id_camara": camaras.find((camara) => normalizeString(camara.descripcion) === normalizeString(row?.camara))?.id || 50, //Must be sent the ID
+            "zona": zonas.find((zona) => normalizeString(zona.descripcion) === normalizeString(row?.municipio))?.id, //Must be sent the ID
+          });
+          baseTimestamp += 1000; // Increment by 1 millisecond
+
+      })
+      .on('end', () => {
+        fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2));
+        console.log(`CSV file has been converted to JSON and saved to ${jsonFilePath}`);
+        resolve();
+      })
+      .on('error', (error) => {
+        console.error('Error processing CSV file:', error);
+        reject(error);
+      });
+  });
 }
 
+const csvFilePath = 'dataFirst.csv';
+const jsonFilePath = 'dataFirst.json';
 
-await processCsvData();
+csvToJson(csvFilePath, jsonFilePath)
+  .then(() => console.log('CSV to JSON conversion completed successfully'))
+  .catch((error) => console.error('Error during CSV to JSON conversion:', error));
+
+

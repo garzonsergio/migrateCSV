@@ -1,0 +1,12 @@
+[
+  {
+    "fecha_hora_registro": "2024-09-11T20:09:53.648Z",
+    "latitud": "6.26846",
+    "longitud": "-75.63006",
+    "fecha_hora_inicio": "2019-12-02 12:16:00",
+    "foto": "https://siata.gov.co/hidrologia/incendios_forestales/fotos_incendios/incendio-2019-12-02-12-16.jpeg",
+    "tipo_incendio": "mediano",
+    "id_camara": 50,
+    "zona": 1
+  }
+]
